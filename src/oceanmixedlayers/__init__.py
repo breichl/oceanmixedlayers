@@ -1,4 +1,4 @@
-from .main import oceanmixedlayers
+from .oceanmixedlayers import oceanmixedlayers
 
 """Top-level package for oceanmixedlayers"""
 
