@@ -1,7 +1,6 @@
 # This is a Python import of the matlab code to compute the mixed layer depth (MLD) of an input profile.
 # This is based on the MATLAB code maintained on mixedlayer.ucsd.edu
 
-import gsw as gsw
 import numpy as np
 from .threshold import threshold as threshold
 from .gradient import gradient as gradient
