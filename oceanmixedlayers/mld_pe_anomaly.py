@@ -1,3 +1,7 @@
+"""
+Contains the codes needed to compute the PE anomaly associated with mixing a water column to a specified depth.
+"""
+
 import numpy as np
 
 def PE_Kernel_linear(R_layer,dRdz,Z_U,Z_L):
@@ -15,7 +19,7 @@ def MixLayers(Tracer,dZ,nlev):
     T_Mixed = np.sum((Tracer*dZ)[:nlev,...],axis=0)/DZ_Mixed
     return T_Mixed, DZ_Mixed
 
-class energy2mix():
+class mld_pe_anomaly():
     def __init__():
         pass
 

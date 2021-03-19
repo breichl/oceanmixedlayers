@@ -2,7 +2,7 @@ from .threshold import threshold as _threshold
 from .gradient import gradient as _gradient
 from .holtetalley import holtetalley as _holtetalley
 from .energy import energy as _energy
-from .energy2mix import energy2mix as _energy2mix
+from .mld_pe_anomaly import mld_pe_anomaly as _mld_pe_anomaly
 
 class oceanmixedlayers():
     '''
@@ -46,7 +46,7 @@ class oceanmixedlayers():
         mld = _energy.energetic_mixing_depth_Rho0_Linear_nd(ptntl_rho_layer,ptntl_rho_grad,z_c, thck, energy)
         return mld
 
-    def energy2mix(z_c, thck, ptntl_rho_layer, ptntl_rho_grad=0.0, depth=0., gradient=False):
+    def mld_pe_anomaly(z_c, thck, ptntl_rho_layer, ptntl_rho_grad=0.0, depth=0., gradient=False):
         if max(depth)>0.:
             print('insert a negative value for depth')
             asdf
@@ -56,5 +56,5 @@ class oceanmixedlayers():
             if len(ptntl_rho_grad.shape)==0:
                 print('Need to pass ptntl_rho_grad to pe_anomaly_density if gradient=True')
                 asdf
-        mld = _energy2mix.compute_energy_to_mix(ptntl_rho_layer,ptntl_rho_grad,z_c, thck, depth)
+        mld = _mld_pe_anomaly.compute_energy_to_mix(ptntl_rho_layer,ptntl_rho_grad,z_c, thck, depth)
         return mld
