@@ -1,12 +1,12 @@
-% This is the original matlab/octave file from Holte and Talley
+% This is the original matlab/octave file from Holte and Talley, modified into a function
 
 % This subroutine calculates the mixed layer depth (MLD) of the input profile.
 % It is called by get_mld.m.
 
-% The algorithm's parameters:
-
-function [OUT]=findmld_fun(pres,temp,sal,pden)
+function [OUT]=holtetalley(pres,temp,sal,pden)
 format long
+
+% The algorithm's parameters:
 errortol = 1*10^-10; % Error tolerance for fitting a straight line to the mixed layer -- unitless
 range = 25;          % Maximum separation for searching for clusters of possible MLDs -- dbar
 deltad = 100;        % Maximum separation of temperature and temperature gradient maxima for identifying

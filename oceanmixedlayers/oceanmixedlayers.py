@@ -5,9 +5,9 @@ from .energy import energy as _energy
 from .energy2mix import energy2mix as _energy2mix
 
 class oceanmixedlayers():
-    """
+    '''
     Main class for ocean mixed layers computations.
-    """
+    '''
 
     def __init__(self):
         self.MLD = 0.0
