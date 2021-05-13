@@ -21,8 +21,9 @@ setuptools.setup(
         "License :: TEMPORARY",
         "Operating System :: OS Independent",
     ],
-    package_dir={"": "oceanmixedlayers"},
-    packages=setuptools.find_packages(where="oceanmixedlayers"),
+    #package_dir={"": "oceanmixedlayers"},
+    #packages=setuptools.find_packages(where="oceanmixedlayers"),
+    packages=['oceanmixedlayers'],
     python_requires=">=3.6",
     install_requires=[
         'numpy',
