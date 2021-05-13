@@ -3,7 +3,7 @@
 % This subroutine calculates the mixed layer depth (MLD) of the input profile.
 % It is called by get_mld.m.
 
-function [OUT]=holtetalley(pres,temp,sal,pden)
+function [OUTPUT]=holtetalley(pres,temp,sal,pden)
 format long
 
 % The algorithm's parameters:
@@ -595,7 +595,7 @@ danalysis = analysis_d;
 tanalysis = analysis_t;
 sanalysis = analysis_s;
 danalysis = analysis_d;
-OUT = [mixedtp,mixedsp,mixeddp,tanalysis,sanalysis,danalysis,testt,testd,...
+OUTPUT = [mixedtp,mixedsp,mixeddp,tanalysis,sanalysis,danalysis,testt,testd,...
        mldepthdensp, mldepthptmpp, gtmldp, gdmldp,...
        upperdtmin,upperdsmax,upperddmax,...
        dtmax,dsmin,ddmin,tmax,pres(smin),dmin,dtandtmax,dsandsmin,tdiff,ddiff];
