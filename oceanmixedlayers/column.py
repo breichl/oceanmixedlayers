@@ -190,6 +190,11 @@ class column():
         ax.ravel()[1].plot(self.S,self.zc,'k-')
         ax.ravel()[2].plot(self.rho,self.zc,'k-')
         ax.ravel()[3].plot(self.prho,self.zc,'k-')
+
+        ax.ravel()[0].set(ylabel='z',xlabel='T')
+        ax.ravel()[1].set(ylabel='z',xlabel='S')
+        ax.ravel()[2].set(ylabel='z',xlabel=r'$\rho$')
+        ax.ravel()[3].set(ylabel='z',xlabel=r'$\rho_\theta$')
         
         fi.tight_layout()
         return fi,ax
@@ -208,14 +213,14 @@ class column():
     
     def mld_pe_anomaly(self,gradient=False,energy=10.0):
         if gradient:
-            print('not ready for gradient')
+            print('not ready for gradient in column mode')
             return -999
         else:
             dprhodz = self.prho*0.0
-        return _mld_pe_anomaly(self.prho, dprhodz, self.zc, self.dz, energy).mld
+        return _mld_pe_anomaly(self.zc, self.dz, self.prho, dprhodz, energy).mld
 
     def mld_delta_pe(self,energy=10.0,Debug=False):
-        return _mld_delta_pe(self.pc, self.dp,self.T,self.S, energy,Debug=Debug).mld
+        return _mld_delta_pe(self.pc, self.dp,self.T,self.S, energy,Debug=Debug).mld_z
     
                   
                   

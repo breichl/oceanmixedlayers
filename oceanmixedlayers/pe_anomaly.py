@@ -20,10 +20,10 @@ def MixLayers(Tracer,dZ,nlev):
     return T_Mixed, DZ_Mixed
 
 class pe_anomaly():
-    def __init__():
-        pass
+    def __init__(self,Rho0_layer,dRho0dz_layer,Zc,dZi,DPT):
+        self.compute(Rho0_layer,dRho0dz_layer,Zc,dZi,DPT)
 
-    def compute_energy_to_mix(Rho0_layer,dRho0dz_layer,Zc,dZi,DPT):
+    def compute(self,Rho0_layer,dRho0dz_layer,Zc,dZi,DPT):
     
         dZ = np.copy(dZi)
         
@@ -81,4 +81,4 @@ class pe_anomaly():
             ACTIVE[FINAL] = False
             FINAL[:] = False
         
-        return PEdelta
+        self.PE = PEdelta

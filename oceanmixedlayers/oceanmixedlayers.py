@@ -128,7 +128,7 @@ class oceanmixedlayers:
 
 
         if not gradient:
-            ptntl_rho_grad = ptntl_rho_layer * 0.0
+            ptntl_rho_grad = []
         else:
             if len(ptntl_rho_grad.shape) == 0:
                 print(
@@ -136,8 +136,8 @@ class oceanmixedlayers:
                 )
                 asdf
         mld = _mld_pe_anomaly(
-            ptntl_rho_layer, ptntl_rho_grad, z_c, thck, energy
-        )
+            z_c,thck,ptntl_rho_layer, ptntl_rho_grad, energy
+        ).mld
         return mld
 
     def mld_delta_pe(
@@ -160,10 +160,13 @@ class oceanmixedlayers:
         mld: The depth where the value of the PE anomaly equals the defined energy (m)
         """
 
+        if coord=='pressure':
+            #Convert to Pa
+            v_c = v_c*1.e4
+            dv = dv*1.e4
         mld = _mld_delta_pe(
-            T_layer, S_layer, v_c, dv, energy=energy, coord=coord
-        )
-                                            
+            v_c, dv, T_layer, S_layer, energy=energy, coord=coord
+        ).mld_z
         return mld
 
     def pe_anomaly(
@@ -197,7 +200,7 @@ class oceanmixedlayers:
                     "Need to pass ptntl_rho_grad to pe_anomaly_density if gradient=True"
                 )
                 asdf
-        mld = _pe_anomaly(
+        pe = _pe_anomaly(
             ptntl_rho_layer, ptntl_rho_grad, z_c, thck, depth
-        )
-        return mld
+        ).PE
+        return pe
