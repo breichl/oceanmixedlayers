@@ -19,7 +19,7 @@ def MixLayers(Tracer,dZ,nlev):
     T_Mixed = np.sum((Tracer*dZ)[:nlev,...],axis=0)/DZ_Mixed
     return T_Mixed, DZ_Mixed
 
-class mld_pe_anomaly():
+class pe_anomaly():
     def __init__():
         pass
 

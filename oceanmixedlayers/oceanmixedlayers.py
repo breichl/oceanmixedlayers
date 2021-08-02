@@ -1,9 +1,10 @@
 from .threshold import threshold as _threshold
 from .gradient import gradient as _gradient
 from .holtetalley import holtetalley as _holtetalley
-from .energy import energy as _energy
-from .mld_pe_anomaly import mld_pe_anomaly as _mld_pe_anomaly
-
+from .energy import mld_pe_anomaly as _mld_pe_anomaly
+from .energy import mld_delta_pe as _mld_delta_pe
+from .pe_anomaly import pe_anomaly as _pe_anomaly
+from .column import column as _column
 
 class oceanmixedlayers:
     """
@@ -12,6 +13,12 @@ class oceanmixedlayers:
 
     def __init__(self):
         self.MLD = 0.0
+
+    def column(**kwargs):
+        """
+        Used to get a column of ocean properties
+        """
+        return _column(**kwargs)
 
     def threshold(coordinate, value, delta=0.0, ref=0.0):
         """
@@ -99,7 +106,7 @@ class oceanmixedlayers:
 
         return mld
 
-    def pe_anomaly_density(
+    def mld_pe_anomaly(
         z_c, thck, ptntl_rho_layer, ptntl_rho_grad=0.0, energy=25.0, gradient=False
     ):
         """
@@ -119,6 +126,7 @@ class oceanmixedlayers:
         mld: The depth where the value of the PE anomaly equals the defined energy (m)
         """
 
+
         if not gradient:
             ptntl_rho_grad = ptntl_rho_layer * 0.0
         else:
@@ -127,12 +135,38 @@ class oceanmixedlayers:
                     "Need to pass ptntl_rho_grad to pe_anomaly_density if gradient=True"
                 )
                 asdf
-        mld = _energy.energetic_mixing_depth_Rho0_Linear_nd(
+        mld = _mld_pe_anomaly(
             ptntl_rho_layer, ptntl_rho_grad, z_c, thck, energy
         )
         return mld
 
-    def mld_pe_anomaly(
+    def mld_delta_pe(
+            v_c, dv, T_layer, S_layer, coord='pressure',energy=25.0
+    ):
+        """
+        Interface to compute the mld from the PE anomaly based on temperature and salinity
+        
+        Parameters
+        ----------
+        v_c: The vertical coordinate (m if depth/hydrostatic or dbar if pressure)
+        dv: The thickness of the layer (m if depth/hydrostatic or dbar if pressure)
+        T_layer: The mean temperature over the layer (degC)
+        S_layer: The mean salinity over the layer (g/kg)
+        coord: 'pressure', 'depth', or 'hydrostatic'
+        energy: The energy threshold for setting the depth based on PE anomaly (J/m2)
+        
+        Returns
+        -------
+        mld: The depth where the value of the PE anomaly equals the defined energy (m)
+        """
+
+        mld = _mld_delta_pe(
+            T_layer, S_layer, v_c, dv, energy=energy, coord=coord
+        )
+                                            
+        return mld
+
+    def pe_anomaly(
         z_c, thck, ptntl_rho_layer, ptntl_rho_grad=0.0, depth=0.0, gradient=False
     ):
         """
@@ -151,7 +185,8 @@ class oceanmixedlayers:
         -------
         energy: The PE anomaly at the given depth (J/m2)
         """
-        if max(depth) > 0.0:
+
+        if max(depth.flatten()) > 0.0:
             print("insert a negative value for depth")
             asdf
         if not gradient:
@@ -162,7 +197,7 @@ class oceanmixedlayers:
                     "Need to pass ptntl_rho_grad to pe_anomaly_density if gradient=True"
                 )
                 asdf
-        mld = _mld_pe_anomaly.compute_energy_to_mix(
+        mld = _pe_anomaly(
             ptntl_rho_layer, ptntl_rho_grad, z_c, thck, depth
         )
         return mld
