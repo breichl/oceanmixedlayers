@@ -221,6 +221,15 @@ class column():
 
     def mld_delta_pe(self,energy=10.0,Debug=False):
         return _mld_delta_pe(self.pc, self.dp,self.T,self.S, energy,Debug=Debug).mld_z
+
+    def pe_anomaly(self,gradient=False,Dpt=0):
+        if gradient:
+            print('not ready for gradient in column mode')
+            return -999
+        else:
+            dprhodz = self.prho*0.0
+            
+        return _pe_anomaly(self.prho,dprhodz,self.zc,self.dz,DPT=Dpt).PE
     
                   
                   
