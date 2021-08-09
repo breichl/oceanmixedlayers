@@ -90,7 +90,10 @@ class threshold():
             if absdiff:
                 exceeds_mask[active_mask] = abs(value[i_c,active_mask]-value_ref[active_mask])>delta
             else:
-                exceeds_mask[active_mask] = value[i_c,active_mask]>value_threshold[active_mask]
+                # First check is for value exceeding value at reference depth,
+                #  added second check to be sure that we are deeper than the reference value.
+                exceeds_mask[active_mask] = (   (value[i_c,active_mask]>value_threshold[active_mask])
+                                              & (coordinate[i_c,active_mask]>reference) )
             if interp:
                 crd_up = coordinate[i_c-1,exceeds_mask]
                 crd_dn = coordinate[i_c,exceeds_mask]
