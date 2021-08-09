@@ -218,6 +218,9 @@ class mld_delta_pe():
                                             )
                                    ,axis=0)
             
+            #Running count of MLD_z, only used if the whole column mixes.
+            MLD_z[ACTIVE] += dZ_x[z,:]
+
             FINAL[ACTIVE] = (PE_x[ACTIVE]-PE_i[ACTIVE]>energy)
             ACTIVE[ACTIVE] = (PE_x[ACTIVE]-PE_i[ACTIVE]<energy)
             
