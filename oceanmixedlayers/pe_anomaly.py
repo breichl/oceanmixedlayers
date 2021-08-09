@@ -20,7 +20,18 @@ def MixLayers(Tracer,dZ,nlev):
     return T_Mixed, DZ_Mixed
 
 class pe_anomaly():
-    def __init__(self,Rho0_layer,dRho0dz_layer,Zc,dZi,DPT):
+    def __init__(self,Rho0_layer,dRho0dz_layer,Zc,dZi,DPT,grav=9.81):
+        self.grav = grav
+        # The syntax below is written assuming an nd structure of Rho0, dRho0dz, Zc, and dZ, where n is >=2.
+        # If a single column is passed in we convert to a 2d array.
+        if (len(np.shape(Rho0_layer))==1):
+            Rho0_layer = np.atleast_2d(Rho0_layer).T
+            dRho0dz_layer = np.atleast_2d(dRho0dz_layer).T
+        if (np.shape(Rho0_layer)!=np.shape(Zc)):
+            Zc = np.broadcast_to(Zc,np.shape(Rho0_layer.T)).T
+            dZi = np.broadcast_to(dZi,np.shape(Rho0_layer.T)).T
+
+
         self.compute(Rho0_layer,dRho0dz_layer,Zc,dZi,DPT)
 
     def compute(self,Rho0_layer,dRho0dz_layer,Zc,dZi,DPT):
@@ -43,14 +54,17 @@ class pe_anomaly():
         
         ACTIVE = np.ones(ND,dtype='bool')
         ACTIVE[np.isnan(Rho0_layer[0,...])] = False
-        
+
+        PEdelta[DPT==0] = 0.0
+        ACTIVE[DPT==0] = False
+
         FINAL = np.zeros(ND,dtype='bool')
         
         z=-1
         while (z<NZ-1 and np.sum(ACTIVE)>0):
             z += 1
             
-            FINAL[ACTIVE] =  (Z_L[z,ACTIVE]<DPT[ACTIVE])
+            FINAL[ACTIVE] =  ((Z_L[z,ACTIVE]<DPT[ACTIVE]))
             #Cut the bottom of the cell
             Z_L[z,FINAL] = DPT[FINAL]
             #Update the dZ
@@ -80,5 +94,21 @@ class pe_anomaly():
             
             ACTIVE[FINAL] = False
             FINAL[:] = False
-        
-        self.PE = PEdelta
+        if (np.sum(ACTIVE)>0):
+            PE_before  = np.sum(PE_Kernel_linear(Rho0_layer[:,ACTIVE],
+                                                 dRho0dz_layer[:,ACTIVE],
+                                                 Z_U[:z+1,ACTIVE],
+                                                 Z_L[:z+1,ACTIVE]),
+                                axis=0)
+            
+            Rho0_Mixed[:z+1,ACTIVE],dz_Mixed[ACTIVE] = MixLayers(Rho0_layer[:,ACTIVE],
+                                                               dZ[:,ACTIVE],
+                                                               z+1)
+            PE_after  = np.sum(PE_Kernel(Rho0_Mixed[:z+1,ACTIVE],
+                                         Z_U[:z+1,ACTIVE],
+                                         Z_L[:z+1,ACTIVE]),
+                               axis=0)
+            
+            PEdelta[ACTIVE] = PE_after - PE_before
+            
+        self.PE = PEdelta*self.grav
