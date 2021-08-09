@@ -11,9 +11,9 @@ pip install -e .
 
 ### Creating a clean conda install with minimal external packages  
 
-This package utilizes numpy, matplotlib, xarray, jupyter, netcdf4, and gsw for full functionality.  To create a clean conda environment with these packages follow:  
+This package utilizes numpy and gsw for functionality of the mld software.  Notebooks and other tests may require additional packages, such as xarray and matplotlib.  To create a clean conda environment with the minimum required packages follow:  
 ```
-conda create env -n oml numpy matplotlib xarray jupyter netcdf4  
+conda create env -n oml numpy  
 conda activate oml  
 conda install -c conda-forge gsw  
 ```  
@@ -22,4 +22,4 @@ You can then activate the oml environment and follow the installation instructio
 
 ## Instructions for using the installed package  
 
-Examples and short tests are given in notebook form in the tests folder.  Some examples require first downloading the Argo profile database (see ftp://usgodae.org/pub/outgoing/argo/). Idealized profiles can be constructed for testing the interfaces as well.
+Examples and short tests are given in notebook form in the tests folder.  Some examples require downloading the Argo profile database (see ftp://usgodae.org/pub/outgoing/argo/). Idealized profiles can be constructed for testing the interfaces as well, without need for obtaining external data.
