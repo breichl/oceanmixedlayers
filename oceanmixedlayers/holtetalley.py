@@ -15,18 +15,20 @@ class holtetalley():
         cnsrv_temp=np.copy(cnsrv_tempi)
         ptntl_rho=np.copy(ptntl_rhoi)
 
-        LP = np.shape(pres)[0]
-        LS = np.shape(pres)[1:]
-        if (len(pres.shape))==1:
+        if ((len(pres.shape))==1 and (len(cnsrv_temp.shape))==1):
             pres = np.atleast_2d(pres).T
             cnsrv_temp = np.atleast_2d(cnsrv_temp).T
             sal = np.atleast_2d(sal).T
             ptntl_rho = np.atleast_2d(ptntl_rho).T
+        elif ((len(pres.shape))==1 and (len(cnsrv_temp.shape))>1):
+            pres = (np.broadcast_to(pres,np.shape(cnsrv_temp.T)).T).copy()
+
+        LP = np.shape(pres)[0]
+        LS = np.shape(pres)[1:]
 
         MINDIFF = np.nanmin((pres-10.)**2,axis=0)
         for zi in range(LP):
             LI = (MINDIFF==(pres[zi,...]-10.)**2)
-            
             pres[:LP-zi,LI]=(pres[zi:,LI])
             pres[LP-zi:,LI]=np.NaN
             sal[:LP-zi,LI]=(sal[zi:,LI])
