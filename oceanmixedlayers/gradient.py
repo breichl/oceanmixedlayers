@@ -137,7 +137,7 @@ class gradient():
         if (coordinate.shape != value.shape):
             RuntimeError("The vertical coordinate must be same shape as the value array")
 
-        num_coord = value.shape[0]
+        num_coord = value.shape[0] -1 #Should this be -1?
         shape_profs = value.shape[1:]
 
         if len(shape_profs)==0:
@@ -184,7 +184,7 @@ class gradient():
         ml_slope[mask] = mask_val
         ml_intercept[mask] = mask_val
 
-        i_c=0
+        i_c=0#Should this be i_c=-1?
         while ( (np.sum(active_mask)>0) and (i_c<num_coord-1) ):
             i_c+=1
 
@@ -207,10 +207,11 @@ class gradient():
         coordinate_sm = 1./3.*(coordinate[2:,...]+coordinate[1:-1,...]+coordinate[:-2,...])
         dv_dc_max = np.nanmax(abs(dv_dc),axis=0)
 
-        mask = update_mask(value[0,...],mask_val)
+        mask = update_mask(dv_dc_max,mask_val)
         #Activate any points that aren't initially masked points
         active_mask = (~mask)
         i_c=-1
+
         while ( (np.sum(active_mask)>0) and (i_c<num_coord-1) ):
             i_c+=1
             exceeds_mask[active_mask] = abs(dv_dc)[i_c,active_mask]==abs(dv_dc_max)[active_mask]
@@ -235,6 +236,7 @@ class gradient():
             ml_values = np.atleast_2d(ml_values).T
             cl_values = np.atleast_2d(cl_values).T
 
+        
         closest = np.nanmin(abs(ml_values-cl_values),axis=0)
         maximum = np.nanmax(ml_values-cl_values,axis=0)
         minimum = np.nanmin(ml_values-cl_values,axis=0)
