@@ -219,8 +219,8 @@ class column():
             dprhodz = self.prho*0.0
         return _mld_pe_anomaly(self.zc, self.dz, self.prho, dprhodz, energy).mld
 
-    def mld_delta_pe(self,energy=10.0,Debug=False):
-        return _mld_delta_pe(self.pc, self.dp,self.T,self.S, energy,Debug=Debug).mld_z
+    def mld_delta_pe(self,energy=10.0,Debug=False,eqstate='gsw'):
+        return _mld_delta_pe(self.pc, self.dp,self.T,self.S, energy,Debug=Debug,eqstate=eqstate).mld_z
 
     def pe_anomaly(self,gradient=False,Dpt=0):
         if gradient:

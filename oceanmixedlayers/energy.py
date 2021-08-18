@@ -47,10 +47,11 @@ class mld_delta_pe():
                  #Debugging
                  Debug=False,
                  #Constants that can be set
-                 grav=9.81,rho0=1025.):
+                 grav=9.81,rho0=1025.,
+                 eqstate='Full'):
         self.grav = grav
         self.rho0 = rho0
-
+        self.eqstate = eqstate
         # The syntax below is written assuming an nd structure of T, S, Zc, and dZ, where n is >=2.
         # If a single column is passed in we convert to a 2d array.
         if (len(np.shape(T_layer))==1):
@@ -69,8 +70,13 @@ class mld_delta_pe():
             Pc = Vc
             dP = dV
             #Sets Rho_i
-            Rho_i = gsw.density.rho(S_layer,T_layer,Pc/1.e4)
-
+            if eqstate='Full':
+                Rho_i = gsw.density.rho(S_layer,T_layer,Pc/1.e4)
+            elif eqstate='Linear':
+                Rho_i = self.rho0+(S_layer-35)*0.8-(T_layer-10)*0.2
+            else:
+                print("Bad choice for eqstate")
+                return
             #Compute the layer thicknesses 
             dZ_i = -dP/(self.grav*Rho_i)
             Zc_i = np.zeros(np.shape(dZ_i))
@@ -90,7 +96,10 @@ class mld_delta_pe():
             Pi = np.array([0.,]+list(np.cumsum(dZ_i*self.grav*self.rho0)))
             Pc = 0.5*(Pi[1:]+Pi[:-1])
             #Compute Rho_i assuming hydrostatic pressure
-            Rho_i = gsw.density.rho(S_layer,T_layer,Pc/1.e4)
+            if eqstate='Full':
+                Rho_i = gsw.density.rho(S_layer,T_layer,Pc/1.e4)
+            elif eqstate='Linear':
+                Rho_i = self.rho0+(S_layer-35)*0.8-(T_layer-10)*0.2
             #Iterate to make density consistent w/ pressure if Coord is not 'hydrostatic'
             if coord=='depth':
                 #Update the density and pressure iteratively to convergence
@@ -98,7 +107,12 @@ class mld_delta_pe():
                     #How many iterations?
                     Pi = np.array([0.,]+list(np.cumsum(dZ_i*self.grav*Rho_i)))
                     Pc = 0.5*(Pi[1:]+Pi[:-1])
-                    Rho_0 = gsw.density.rho(S_layer,T_layer,Pc/1.e4)
+                    if eqstate='Full':
+                        Rho_0 = gsw.density.rho(S_layer,T_layer,Pc/1.e4)
+                    elif eqstate='Linear':
+                        Rho_0 = self.rho0+(S_layer-35)*0.8-(T_layer-10)*0.2
+            
+                    
             elif coord=='hydrostatic':
                 #Don't update the density
                 pass
@@ -193,10 +207,12 @@ class mld_delta_pe():
             S_x[:z+1,ACTIVE],_ = MixLayers(S_i[:,ACTIVE],
                                            -dP[:,ACTIVE],
                                            z+1)
-            
-            Rho_x = gsw.density.rho(S_x[:z+1,ACTIVE],
-                                    T_x[:z+1,ACTIVE],
-                                    Pc[:z+1,ACTIVE]/1.e4)
+            if self.eqstate='Full':
+                Rho_x = gsw.density.rho(S_x[:z+1,ACTIVE],
+                                        T_x[:z+1,ACTIVE],
+                                        Pc[:z+1,ACTIVE]/1.e4)
+            elif self.eqstate='Linear':
+                Rho_x = self.rho0+(S_x[:z+1,ACTIVE]-35)*0.8-(T_x[:z+1,ACTIVE]-10)*0.2
             
             #Recompute the layer thicknesses 
             dZ_x = -dP[:z+1,ACTIVE]/(self.grav*Rho_x)
@@ -248,7 +264,10 @@ class mld_delta_pe():
 
 
                 #Recompute the reduced bottom layer thickness for the initial state
-                Rho_i_bot = gsw.density.rho(S_i[z,FINAL],T_i[z,FINAL],PC[z,...]/1.e4)
+                elif self.eqstate='Full':
+                    Rho_i_bot = gsw.density.rho(S_i[z,FINAL],T_i[z,FINAL],PC[z,...]/1.e4)
+                elif self.eqstate='Linear':
+                    Rho_i_bot = self.rho0+(S_i[z,FINAL]-35)*0.8-(T_i[z,FINAL]-10)*0.2
                 #PE_i[FINAL] = PE_i_above[FINAL] + PE_Kernel_dP(Zc_i[z,FINAL],DP[z])
                 PE_i[FINAL] = PE_i_above[FINAL] + PE_Kernel_dP(self.grav*Rho_i_bot,
                                                                P_U[z,FINAL],P_U[z,FINAL]-DP[z])
@@ -259,10 +278,13 @@ class mld_delta_pe():
                 S_x[:z+1,FINAL],MLDp[FINAL] = MixLayers(S_i[:z+1,FINAL],
                                                  -DP,
                                                  z+1)
-                Rho_x = gsw.density.rho(S_x[:z+1,FINAL],
-                                        T_x[:z+1,FINAL],
-                                        PC/1.e4)
-
+                elif self.eqstate='Full':
+                    Rho_x = gsw.density.rho(S_x[:z+1,FINAL],
+                                            T_x[:z+1,FINAL],
+                                            PC/1.e4)
+                elif self.eqstate='Linear':
+                    Rho_x = self.rho0+(S_x[:z+1,FINAL]-35)*0.8-(T_x[:z+1,FINAL]-10)*0.2
+            
                 #Recompute the layer thicknesses 
                 dZ_x = -DP/(self.grav*Rho_x)
                 MLDz[FINAL] = np.sum(dZ_x,axis=0)
