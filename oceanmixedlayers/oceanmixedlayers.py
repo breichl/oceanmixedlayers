@@ -2,6 +2,7 @@ from .threshold import threshold as _threshold
 from .gradient import gradient as _gradient
 from .holtetalley import holtetalley as _holtetalley
 from .energy import mld_pe_anomaly as _mld_pe_anomaly
+from .energy_Newton import mld_pe_anomaly as _mld_pe_anomaly_Newton
 from .energy import mld_delta_pe as _mld_delta_pe
 from .pe_anomaly import pe_anomaly as _pe_anomaly
 from .column import column as _column
@@ -107,7 +108,8 @@ class oceanmixedlayers:
         return mld
 
     def mld_pe_anomaly(
-        z_c, thck, ptntl_rho_layer, ptntl_rho_grad=0.0, energy=25.0, gradient=False
+            z_c, thck, ptntl_rho_layer, ptntl_rho_grad=0.0, energy=25.0, gradient=False,
+            iteration='Bisection'
     ):
         """
         Interface to compute the mld from the PE anomaly based on potential density
@@ -135,9 +137,17 @@ class oceanmixedlayers:
                     "Need to pass ptntl_rho_grad to pe_anomaly_density if gradient=True"
                 )
                 asdf
-        mld = _mld_pe_anomaly(
-            z_c,thck,ptntl_rho_layer, ptntl_rho_grad, energy
-        ).mld
+        if iteration=='Bisection':
+            mld = _mld_pe_anomaly(
+                z_c,thck,ptntl_rho_layer, ptntl_rho_grad, energy
+            ).mld
+        elif iteration=='Newton':
+            if gradient:
+                print("Can't use Newton's iteration w/ gradients yet.")
+                asdf
+            mld = _mld_pe_anomaly_Newton(
+                z_c,thck,ptntl_rho_layer, ptntl_rho_grad, energy
+            ).mld
         return mld
 
     def mld_delta_pe(

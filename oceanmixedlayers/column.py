@@ -5,7 +5,8 @@ from matplotlib import pyplot as plt
 from .threshold import threshold as _threshold
 from .gradient import gradient as _gradient
 from .holtetalley import holtetalley as _holtetalley
-from .energy import mld_pe_anomaly as _mld_pe_anomaly
+from .energy import mld_pe_anomaly as _mld_pe_anomaly_Bisection
+from .energy_Newton import mld_pe_anomaly as _mld_pe_anomaly_Newton
 from .energy import mld_delta_pe as _mld_delta_pe
 from .pe_anomaly import pe_anomaly as _pe_anomaly
 
@@ -211,13 +212,16 @@ class column():
     def holtetalley(self):
         return _holtetalley.algorithm_mld(self.pc/1.e4, self.S, self.T, self.prho)
     
-    def mld_pe_anomaly(self,gradient=False,energy=10.0):
+    def mld_pe_anomaly(self,gradient=False,energy=10.0,iteration='Bisection'):
         if gradient:
             print('not ready for gradient in column mode')
             return -999
         else:
             dprhodz = self.prho*0.0
-        return _mld_pe_anomaly(self.zc, self.dz, self.prho, dprhodz, energy).mld
+        if iteration=='Bisection':
+            return _mld_pe_anomaly_Bisection(self.zc, self.dz, self.prho, dprhodz, energy).mld
+        elif iteration=='Newton':
+            return _mld_pe_anomaly_Newton(self.zc, self.dz, self.prho, dprhodz, energy).mld
 
     def mld_delta_pe(self,energy=10.0,Debug=False):
         return _mld_delta_pe(self.pc, self.dp,self.T,self.S, energy,Debug=Debug).mld_z
