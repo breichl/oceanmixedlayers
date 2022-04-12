@@ -70,9 +70,9 @@ class mld_delta_pe():
             Pc = Vc
             dP = dV
             #Sets Rho_i
-            if eqstate='Full':
+            if eqstate=='Full':
                 Rho_i = gsw.density.rho(S_layer,T_layer,Pc/1.e4)
-            elif eqstate='Linear':
+            elif eqstate=='Linear':
                 Rho_i = self.rho0+(S_layer-35)*0.8-(T_layer-10)*0.2
             else:
                 print("Bad choice for eqstate")
@@ -96,9 +96,9 @@ class mld_delta_pe():
             Pi = np.array([0.,]+list(np.cumsum(dZ_i*self.grav*self.rho0)))
             Pc = 0.5*(Pi[1:]+Pi[:-1])
             #Compute Rho_i assuming hydrostatic pressure
-            if eqstate='Full':
+            if eqstate=='Full':
                 Rho_i = gsw.density.rho(S_layer,T_layer,Pc/1.e4)
-            elif eqstate='Linear':
+            elif eqstate=='Linear':
                 Rho_i = self.rho0+(S_layer-35)*0.8-(T_layer-10)*0.2
             #Iterate to make density consistent w/ pressure if Coord is not 'hydrostatic'
             if coord=='depth':
@@ -107,9 +107,9 @@ class mld_delta_pe():
                     #How many iterations?
                     Pi = np.array([0.,]+list(np.cumsum(dZ_i*self.grav*Rho_i)))
                     Pc = 0.5*(Pi[1:]+Pi[:-1])
-                    if eqstate='Full':
+                    if eqstate=='Full':
                         Rho_0 = gsw.density.rho(S_layer,T_layer,Pc/1.e4)
-                    elif eqstate='Linear':
+                    elif eqstate=='Linear':
                         Rho_0 = self.rho0+(S_layer-35)*0.8-(T_layer-10)*0.2
             
                     
@@ -207,11 +207,11 @@ class mld_delta_pe():
             S_x[:z+1,ACTIVE],_ = MixLayers(S_i[:,ACTIVE],
                                            -dP[:,ACTIVE],
                                            z+1)
-            if self.eqstate='Full':
+            if self.eqstate=='Full':
                 Rho_x = gsw.density.rho(S_x[:z+1,ACTIVE],
                                         T_x[:z+1,ACTIVE],
                                         Pc[:z+1,ACTIVE]/1.e4)
-            elif self.eqstate='Linear':
+            elif self.eqstate=='Linear':
                 Rho_x = self.rho0+(S_x[:z+1,ACTIVE]-35)*0.8-(T_x[:z+1,ACTIVE]-10)*0.2
             
             #Recompute the layer thicknesses 
@@ -264,9 +264,9 @@ class mld_delta_pe():
 
 
                 #Recompute the reduced bottom layer thickness for the initial state
-                elif self.eqstate='Full':
+                if self.eqstate=='Full':
                     Rho_i_bot = gsw.density.rho(S_i[z,FINAL],T_i[z,FINAL],PC[z,...]/1.e4)
-                elif self.eqstate='Linear':
+                elif self.eqstate=='Linear':
                     Rho_i_bot = self.rho0+(S_i[z,FINAL]-35)*0.8-(T_i[z,FINAL]-10)*0.2
                 #PE_i[FINAL] = PE_i_above[FINAL] + PE_Kernel_dP(Zc_i[z,FINAL],DP[z])
                 PE_i[FINAL] = PE_i_above[FINAL] + PE_Kernel_dP(self.grav*Rho_i_bot,
@@ -278,11 +278,11 @@ class mld_delta_pe():
                 S_x[:z+1,FINAL],MLDp[FINAL] = MixLayers(S_i[:z+1,FINAL],
                                                  -DP,
                                                  z+1)
-                elif self.eqstate='Full':
+                if self.eqstate=='Full':
                     Rho_x = gsw.density.rho(S_x[:z+1,FINAL],
                                             T_x[:z+1,FINAL],
                                             PC/1.e4)
-                elif self.eqstate='Linear':
+                elif self.eqstate=='Linear':
                     Rho_x = self.rho0+(S_x[:z+1,FINAL]-35)*0.8-(T_x[:z+1,FINAL]-10)*0.2
             
                 #Recompute the layer thicknesses 
