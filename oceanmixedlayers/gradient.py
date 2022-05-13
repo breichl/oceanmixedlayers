@@ -291,8 +291,9 @@ def nd_linefit(coordinate,value):
     covariance[nzero] = np.nanmean((coordinate[:,nzero]-coor_mean[nzero])
                                    *(value[:,nzero]-val_mean[nzero]),axis=0)
 
-    correlation = np.zeros(np.shape(val_mean))
-    correlation[nzero] = covariance[nzero]/(val_std[nzero]*coor_std[nzero])
+    #This was computed but I don't think it is used so...
+    #correlation = np.zeros(np.shape(val_mean))
+    #correlation[nzero] = covariance[nzero]/(val_std[nzero]*coor_std[nzero])
 
     slope = np.zeros(np.shape(val_mean))
     slope[nzero] = covariance[nzero]/(coor_std[nzero]**2)
