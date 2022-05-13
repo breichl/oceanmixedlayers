@@ -23,6 +23,8 @@ You can then activate the oml environment and follow the installation instructio
 
 ### Optional additional packages to use all scripts and notebooks:  
 
+*Warning* for some reason conda does not appear to successfully build these packages after gsw is installed.  Building these packages before installing gsw does seem to work.  This error should be better understood.  
+
 ```
 conda install matplotlib jupyter netcdf4 xarray ipykernel  
 ```

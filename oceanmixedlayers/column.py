@@ -15,9 +15,9 @@ class column():
     def __init__(self,
                  kind='idealized',
                  idealized_type='linear',T0=0,dTdz=0,S0=0,dSdz=0,Sb0=0,Tb0=0,Smin=0,Tmin=0,mixedfrac=0.5,
-                 Boussinesq=False,Compressible=False,EOS='Full',rho0=1025,grav=9.81,
+                 Boussinesq=False,Compressible=False,EOS='gsw',rho0=1025,grav=9.81,
                  nz=1,Dpt=1,
-                 ArgoPath='/net3/bgr/Datasets/Argo/202011-ArgoData/dac/aoml/',ArgoID=3900660,NP=0,MaxP=1.e8,
+                 ArgoPath='',ArgoID=3900660,NP=0,MaxP=1.e8,
                  zc=[],dZ=[],T=[],S=[],
                  Debug=False
                 ):
@@ -177,7 +177,7 @@ class column():
             self.dp = self.pi[:-1]-self.pi[1:]
     
     def GetRho(self):
-        if self.EOS=='Full':
+        if self.EOS=='gsw':
             self.rho=gsw.density.rho(self.S,self.T,self.pc/10000.)
             self.prho=gsw.density.rho(self.S,self.T,0.)
         if self.EOS=='Linear':
